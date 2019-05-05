@@ -135,22 +135,13 @@
         var dd = lastBusinessDay.getDate();
         var mm = lastBusinessDay.getMonth() + 1;
         var yyyy = lastBusinessDay.getFullYear();
-        if (dd < 10) {
-          dd = "0" + dd;
-        }
-        if (mm < 10) {
-          mm = "0" + mm;
-        }
+        if (dd < 10) { dd = "0" + dd; }
+        if (mm < 10) { mm = "0" + mm; }
         lastBusinessDay = mm + "/" + dd + "/" + yyyy;
-        return (
-          '<span class="pricing-info__date">As of ' +
-          lastBusinessDay +
-          "</span>"
-        );
+        return ('<span class="pricing-info__date">As of ' + lastBusinessDay + "</span>");
       }
       var outerAnchor = document.querySelector(".communityTwoColumn");
-      var communityName = document.querySelector('h1[itemprop="name"]')
-      .textContent;
+      var communityName = document.querySelector('h1[itemprop="name"]').textContent;
       outerAnchor.insertAdjacentHTML(
         "afterEnd",
         pricingTest.contentRendering.contentFrame(
