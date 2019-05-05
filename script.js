@@ -199,7 +199,7 @@
               pricingTest.contentRendering.careIncludedClassNum(careIncluded) +
               '" id="pricingBlock' +
               careId +
-              '"><div class="pricing-info__item"><img src="https://github.com/jkey774/from-data-layer-to-dynamic-content/images/' +
+              '"><div class="pricing-info__item"><img src="./images/' +
               iconLinkTail +
               '-icon.svg" alt="' +
               careName +
