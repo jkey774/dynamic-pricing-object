@@ -29,7 +29,7 @@
           "Personalize care options to get the support your loved one needs."
         ],
         AL: [
-          "Brookdale caregivers are available to provide assistance with daily living, balancing independence with assistance while delivering service with compassion, understanding, and respect.",
+          "Our caregivers are available to provide assistance with daily living, balancing independence with assistance while delivering service with compassion, understanding, and respect.",
           "Personal care with a personalized monthly rate."
         ],
         IL: [
@@ -199,7 +199,7 @@
               pricingTest.contentRendering.careIncludedClassNum(careIncluded) +
               '" id="pricingBlock' +
               careId +
-              '"><div class="pricing-info__item"><img src="https://www.brookdale.com/content/dam/brookdale/en/icons/' +
+              '"><div class="pricing-info__item"><img src="https://github.com/jkey774/from-data-layer-to-dynamic-content/images/' +
               iconLinkTail +
               '-icon.svg" alt="' +
               careName +
