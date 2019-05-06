@@ -3,24 +3,43 @@
 
 <head>
   <meta charset="utf-8">
-  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css">
   <link rel="stylesheet" href="./master.css">
   <link rel="stylesheet" href="./style.css">
   <title>Pricing Component Demo</title>
-</head>
-
-<body >
-    <header>
-    </header>
-    <main>
-    <script type="text/javascript">
-      var digitalData = {
-          page: {
-              pageInfo: {}
-          }
-      };
+  <script type="text/javascript">
+        var digitalData = {
+            page: {
+                pageInfo: {}
+            },
+            user: {},
+            form: {},
+            communitySearch: {},
+            siteSearch: {}
+        };
+        var pageName = 'corpus christi';
+        var channel = 'communities';
+        var busUnitNumber = '52020';
+        var busNumber = 'BUS\u002D10271';
+        var templateName = 'community';
+        var pageCreated = '';
+        var pageLastModified = '20190404';
+        var chatEnabled = '1';
+        var amenitiesCount = '25';
+        var financialReporting = '';
+        digitalData.page.pageInfo['pageName'] = pageName;
+        digitalData.page.pageInfo['pageURL'] = window.location.href;
+        digitalData.page.pageInfo['siteSection'] = channel;
+        digitalData.page.pageInfo['comBU'] = busUnitNumber;
+        digitalData.page.pageInfo['busNumber'] = busNumber;
+        digitalData.page.pageInfo['templateName'] = templateName;
+        digitalData.page.pageInfo['pageCreated'] = pageCreated;
+        digitalData.page.pageInfo['pageLastModified'] = pageLastModified;
+        digitalData.page.pageInfo['isChatEnabled'] = chatEnabled;
+        digitalData.page.pageInfo['amenitiesCount'] = amenitiesCount;
+        digitalData.page.pageInfo['financialReporting'] = financialReporting;
+        digitalData.page.pageInfo['phoneRouting'] = 0;
     </script>
     <script type="text/javascript">
       digitalData.page.pageInfo['levelsOfCare'] = [{"care_type_id":"MC","name":"Memory Care","care_type_category":"resident","sort_order":3},{"care_type_id":"AL","name":"Personal Care Home","care_type_category":"resident","sort_order":4},{"care_type_id":"IL","name":"Independent Living","care_type_category":"resident","sort_order":5}];
@@ -32,8 +51,27 @@
       digitalData.page.pageInfo['pricingMedicaid'] = '0';
       digitalData.page.pageInfo['pricingSemiPrivateAvailable'] = '1';
     </script>
-        <h1 itemprop="name" style="display:none">Corpus Christi</h1>
-        <div class="communityTwoColumn"></div>
+</head>
+
+<body >
+    <main>
+        <div id="pricingInfo">
+          <div class="pricing-info retain retain--padded">
+            <div class="headline3 text-center">Pricing for <span class="pricing-info__community-name"></span><span class="pricing-info__date"></span></div>
+            <div class="flex-row row" id="pricing-info-row"></div>
+            <div class="pricing-info__footer text-center">
+              <div class="pricing-info__footer-community-specials"></div>
+              <p class="pricing-info__footer--heading">For more details on pricing and availability</p>
+              <div class="pricing-info__footer--ctas">
+                <div>Call <a class="pricing-info__footer--phone" href="tel:855-350-3800">855-350-3800</a></div>
+                <div><span>or</span></div>
+                <div><a class="pricing-info__footer--form-link hidden-md hidden-lg" onclick="app.communityCTAContactForm.openMobileScrollandShowLogin(event, this)" href="#">Complete the form above</a><a class="pricing-info__footer--form-link hidden-xs hidden-sm" onclick="app.communityCTAContactForm.desktopAndTabletScrollToForm(event)" href="#">Complete the form above</a></div>
+              </div>
+              <p class="pricing-info__footer--disclaimer"><span class="pricing-info__footer--disclaimer-asterisk">*</span>Prices shown are an estimate and subject to change. A variety of factors, such as care plans and living options, can affect the monthly rate. Certain residents may be eligible for financial
+                assistance. Prices vary across communities. Further restrictions may apply.</p>
+            </div>
+          </div>
+        </div>
     </main>
 </body>
 
