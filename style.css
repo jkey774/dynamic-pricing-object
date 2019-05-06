@@ -10,6 +10,9 @@
 .pricing-info .headline3 {
   padding: 20px 0 64px;
 }
+.pricing-info__community-name {
+  text-transform:capitalize;
+}
 .pricing-info .flex-row.row > [class^="col-"] {
   background-color: #fff;
   border: 1px solid #ccc;
