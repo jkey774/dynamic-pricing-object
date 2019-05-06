@@ -1,9 +1,10 @@
 (function() {
   "use strict";
-  var pricingTest = {
-    price: (function() {
+  var pricing = {
+    pricingInfo: (function() {
       var info = digitalData.page.pageInfo;
       return {
+        communityName: digitalData.page.pageInfo.pageName,
         careLevels: info.levelsOfCare,
         IL: info.pricingIL,
         AL: info.pricingAL,
@@ -46,80 +47,14 @@
         '<p class="pricing-info__footer-semiprivate"><span class="fa fa-dollar"></span>Semi-private rooms available at a lower cost</p>'
       }
     },
-    contentRendering: {
-      checkLargeAlMcPriceGap: function() {
-        if (
-          pricingTest.price.AL &&
-          pricingTest.price.MC - pricingTest.price.AL > 1500
-        ) {
-          console.log(
-            "MC Price: " +
-            pricingTest.price.MC +
-            "   AL Price: " +
-            pricingTest.price.AL +
-            "   Difference is greater than 1500"
-          );
-          return true;
-        }
-      },
-      renderPrice: function(price, careId) {
-        if (
-          price === "NaN" ||
-          price < 500 ||
-          (careId === "MC" &&
-           pricingTest.contentRendering.checkLargeAlMcPriceGap() === true)
-        ) {
-          return "Call for Pricing";
-        } else {
-          return (
-            '<p class="pricing-info__item--price-label">– Base Rental Rate –</p><p>Starting at <span id="itemPrice">$' +
-            price +
-            '</span><span class="pricing-info__item--price-asterisk">*</span>per month</p>'
-          );
-        }
-      },
-      careIncludedClassNum: function(careIncluded) {
-        if (careIncluded === "1") {
-          return "1";
-        } else {
-          return "0";
-        }
-      },
-      renderCareIncludedPill: function(careIncluded) {
-        if (careIncluded === "1") {
-          return '<div class="pricing-info__item--care-included"><span class="fa fa-heart"></span>Some Care Included</div>';
-        } else {
-          return "";
-        }
-      },
-      checkIfMedicaid: function() {
-        if (pricingTest.price.medicaid === "1") {
-          return pricingTest.strConstants.communitySpecials.medicaid;
-        } else {
-          return "";
-        }
-      },
-      checkIfSemiPrivate: function() {
-        if (pricingTest.price.semiPrivate === "1") {
-          return pricingTest.strConstants.communitySpecials.semiPrivate;
-        } else {
-          return "";
-        }
-      },
-      contentFrame: function(name, date) {
-        return (
-          '<div id="pricingInfo"><div class="pricing-info retain retain--padded"><div class="headline3 text-center">Pricing for ' +
-          name +
-          date +
-          '</div><div class="flex-row row" id="pricing-info-row"></div><div class="pricing-info__footer text-center"><div class="pricing-info__footer-community-specials">' +
-          pricingTest.contentRendering.checkIfMedicaid() +
-          pricingTest.contentRendering.checkIfSemiPrivate() +
-          '</div><p class="pricing-info__footer--heading">For more details on pricing and availability</p><div class="pricing-info__footer--ctas"><div>Call <a class="pricing-info__footer--phone" href="tel:855-350-3800">855-350-3800</a></div><div><span>or</span></div><div><a class="pricing-info__footer--form-link hidden-md hidden-lg" onclick="app.communityCTAContactForm.openMobileScrollandShowLogin(event, this)" href="#">Complete the form above</a><a class="pricing-info__footer--form-link hidden-xs hidden-sm" onclick="app.communityCTAContactForm.desktopAndTabletScrollToForm(event)" href="#">Complete the form above</a></div></div><p class="pricing-info__footer--disclaimer"><span class="pricing-info__footer--disclaimer-asterisk">*</span>Prices shown represent the current lowest private pay basic service rate or monthly fee, as applicable, as of the date listed for a single occupancy unit in the listed community excluding any care costs or other fees, unless otherwise stated.  Prices will vary based on living options, services and/or care provided, and by community. Prices listed are available only to new residents.  Further restrictions may apply.</p></div></div></div>'
-        );
-      }
+    domConstants: {
+      communityName:   document.querySelector(".pricing-info__community-name"),
+      date:            document.querySelector(".pricing-info__date"),
+      pricingRow:      document.getElementById("pricing-info-row"),
+      pricingFooter:   document.querySelector('.pricing-info__footer-community-specials')
     },
-    init: function() {
-      function getLastBusinessDay() {
+    contentRendering: {
+      getLastBusinessDay: function() {
         var today = new Date();
         var dayOfWeek = today.getDay();
         var dayOffset;
@@ -138,21 +73,80 @@
         if (dd < 10) { dd = "0" + dd; }
         if (mm < 10) { mm = "0" + mm; }
         lastBusinessDay = mm + "/" + dd + "/" + yyyy;
-        return ('<span class="pricing-info__date">As of ' + lastBusinessDay + "</span>");
+        return lastBusinessDay;
+      },
+      renderHeader: function() {
+        pricing.domConstants.communityName.insertAdjacentHTML('beforeEnd', digitalData.page.pageInfo.pageName);
+        pricing.domConstants.date.insertAdjacentHTML('beforeEnd', 'As of ' + pricing.contentRendering.getLastBusinessDay());
+      },
+      // check whether price difference between Assisted Living and Memory Care is greater than 1500
+      checkLargeAlMcPriceGap: function() {
+        if (
+          pricing.pricingInfo.AL &&
+          pricing.pricingInfo.MC - pricing.pricingInfo.AL > 1500
+        ) {
+          return true;
+        }
+      },
+      // show 'Call for Pricing' for Memory Care if any of the following are true:
+      // a) price is NaN
+      // b) price is less than 500
+      // c) difference between Assisted Living and Memory Care price is greater than 1500
+      renderPrice: function(price, careId) {
+        if (
+          price === "NaN" ||
+          price < 500 ||
+          (careId === "MC" &&
+           pricing.contentRendering.checkLargeAlMcPriceGap() === true)
+        ) {
+          return "Call for Pricing";
+        } else {
+          return (
+            '<p class="pricing-info__item--price-label">– Base Rental Rate –</p><p>Starting at <span id="itemPrice">$' +
+            price +
+            '</span><span class="pricing-info__item--price-asterisk">*</span>per month</p>'
+          );
+        }
+      },
+      // return the care included flag used in factory content classname for unique css styling
+      getCareIncludedClassNum: function(careIncluded) {
+        if (careIncluded === "1") {
+          return "1";
+        } else {
+          return "0";
+        }
+      },
+      // check whether care is included in price for the specific care level
+      checkIfCareIncluded: function(careIncluded) {
+        if (careIncluded === "1") {
+          return '<div class="pricing-info__item--care-included"><span class="fa fa-heart"></span>Some Care Included</div>';
+        } else {
+          return "";
+        }
+      },
+      // check whether medicaid is accepted at the community
+      checkIfMedicaid: function() {
+        if (pricing.pricingInfo.medicaid === '1') {
+          pricing.domConstants.pricingFooter.insertAdjacentHTML('beforeEnd', pricing.strConstants.communitySpecials.medicaid);
+        }
+      },
+      // check whether semiprivate rooms are available at the community
+      checkIfSemiPrivate: function() {
+        if (pricing.pricingInfo.semiPrivate === '1') {
+          pricing.domConstants.pricingFooter.insertAdjacentHTML('beforeEnd', pricing.strConstants.communitySpecials.semiPrivate);
+        }
       }
-      var outerAnchor = document.querySelector(".communityTwoColumn");
-      var communityName = document.querySelector('h1[itemprop="name"]').textContent;
-      outerAnchor.insertAdjacentHTML(
-        "afterEnd",
-        pricingTest.contentRendering.contentFrame(
-          communityName,
-          getLastBusinessDay()
-        )
-      );
+    },
+    init: function() {
+      pricing.contentRendering.renderHeader();
+      pricing.contentRendering.checkIfMedicaid();
+      pricing.contentRendering.checkIfSemiPrivate();
+
+      // create arrays for each set of care level data
       function getCareName(item) {
         var careProfile = [item.care_type_id, item.name];
-        var price = pricingTest.price;
-        var strConstants = pricingTest.strConstants;
+        var price = pricing.pricingInfo;
+        var strConstants = pricing.strConstants;
         if (item.care_type_id === "IL") {
           careProfile.push(
             price.careIncluded.IL,
@@ -180,9 +174,9 @@
         }
         return careProfile;
       }
-      var careProfiles = pricingTest.price.careLevels.map(getCareName);
-      var innerAnchor = document.getElementById("pricing-info-row");
-      // Factory
+      var careProfiles = pricing.pricingInfo.careLevels.map(getCareName);
+      
+      // Factory for dynamic content
       function createPriceCard(careId, careName, careIncluded, iconLinkTail, descriptionA, price, descriptionB) {
         return {
           careId: careId,
@@ -192,11 +186,11 @@
           descriptionA: descriptionA,
           price: price,
           descriptionB: descriptionB,
-          draw: function() {
-            innerAnchor.insertAdjacentHTML(
+          render: function() {
+            pricing.domConstants.pricingRow.insertAdjacentHTML(
               "beforeEnd",
               '<div class="col-md-4 text-center pricing-info__care-included-' +
-              pricingTest.contentRendering.careIncludedClassNum(careIncluded) +
+              pricing.contentRendering.getCareIncludedClassNum(careIncluded) +
               '" id="pricingBlock' +
               careId +
               '"><div class="pricing-info__item"><img src="./images/' +
@@ -208,24 +202,23 @@
               '</p><p class="pricing-info__item--description">' +
               descriptionA +
               '</p><div class="pricing-info__item--price-footer"><div class="pricing-info__item--price">' +
-              pricingTest.contentRendering.renderPrice(price, careId) +
+              pricing.contentRendering.renderPrice(price, careId) +
               '</div><div class="pricing-info__item--footer"><p>' +
               descriptionB +
               "</p>" +
-              pricingTest.strConstants.svgLogo +
+              pricing.strConstants.svgLogo +
               "</div></div></div>" +
-              pricingTest.contentRendering.renderCareIncludedPill(careIncluded) +
+              pricing.contentRendering.checkIfCareIncluded(careIncluded) +
               "</div>"
             );
           }
         };
       }
+      // pass each careProfile array as a parameter to the factory
       for (var i = 0, len = careProfiles.length; i < len; i++) {
-        createPriceCard.apply({}, careProfiles[i]).draw();
+        createPriceCard.apply({}, careProfiles[i]).render();
       }
     }
   };
-  $(document).ready(function() {
-    pricingTest.init();
-  });
+  pricing.init();
 })();
